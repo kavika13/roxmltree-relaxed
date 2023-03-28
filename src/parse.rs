@@ -258,7 +258,14 @@ pub struct ParsingOptions {
     // because the root node will be set to the first element.
     //
     // Default: false
-    pub fragment_parsing: bool,
+    pub allow_fragment_parsing: bool,
+
+    // Allow relaxed XML version parsing.
+    //
+    // This allows invalid XML with a version besides 1.0 or 1.1 to be parsed.
+    //
+    // Default: false
+    pub relax_version_parsing: bool,
 }
 
 // Explicit for readability.
@@ -268,7 +275,8 @@ impl Default for ParsingOptions {
         ParsingOptions {
             allow_dtd: false,
             nodes_limit: core::u32::MAX,
-            fragment_parsing: false,
+            allow_fragment_parsing: false,
+            relax_version_parsing: false,
         }
     }
 }
@@ -520,7 +528,8 @@ fn parse(text: &str, opt: ParsingOptions) -> Result<Document, Error> {
         .push_ns(Some(NS_XML_PREFIX), BorrowedText::Input(NS_XML_URI))?;
 
     let mut parser = xmlparser_relaxed::Tokenizer::from(text);
-    parser.fragment_parsing = opt.fragment_parsing;
+    parser.fragment_parsing = opt.allow_fragment_parsing;
+    parser.relax_version_parsing = opt.relax_version_parsing;
     let parser = parser;
 
     let parent_id = doc.root().id;
@@ -981,7 +990,9 @@ fn process_text<'input>(
                 loop_detector.inc_references(&s)?;
                 loop_detector.inc_depth(&s)?;
 
-                let parser = xmlparser_relaxed::Tokenizer::from_fragment(doc.text, fragment.range());
+                let mut parser = xmlparser_relaxed::Tokenizer::from_fragment(doc.text, fragment.range());
+                parser.relax_version_parsing = pd.opt.relax_version_parsing;
+                let parser = parser;
                 let mut tag_name = TagNameSpan::new_null();
                 process_tokens(parser, parent_id, loop_detector, &mut tag_name, pd, doc)?;
                 pd.buffer.clear();
