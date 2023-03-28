@@ -1,3 +1,11 @@
+# roxmltree-relaxed
+
+This is a fork of https://github.com/RazrFalcon/roxmltree that exposes options to support some of the relaxed parsing needs I have for some projects.
+
+If you file a PR, make sure the default behavior is identical to that of the original roxmltree.
+
+It also depends on https://github.com/kavika13/xmlparser-relaxed, which itself is forked from https://github.com/RazrFalcon/xmlparser.
+
 # roxmltree
 ![Build Status](https://github.com/RazrFalcon/roxmltree/workflows/Rust/badge.svg)
 [![Crates.io](https://img.shields.io/crates/v/roxmltree.svg)](https://crates.io/crates/roxmltree)
