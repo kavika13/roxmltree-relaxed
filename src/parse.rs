@@ -250,6 +250,15 @@ pub struct ParsingOptions {
     ///
     /// Default: u32::MAX (no limit)
     pub nodes_limit: u32,
+
+    // Set parsing to fragment mode once the root element is reached.
+    //
+    // This allows invalid XML with multiple roots to be parsed.
+    // To access all the items you have to iterate the document descendents,
+    // because the root node will be set to the first element.
+    //
+    // Default: false
+    pub fragment_parsing: bool,
 }
 
 // Explicit for readability.
@@ -259,6 +268,7 @@ impl Default for ParsingOptions {
         ParsingOptions {
             allow_dtd: false,
             nodes_limit: core::u32::MAX,
+            fragment_parsing: false,
         }
     }
 }
@@ -509,7 +519,10 @@ fn parse(text: &str, opt: ParsingOptions) -> Result<Document, Error> {
     doc.namespaces
         .push_ns(Some(NS_XML_PREFIX), BorrowedText::Input(NS_XML_URI))?;
 
-    let parser = xmlparser::Tokenizer::from(text);
+    let mut parser = xmlparser::Tokenizer::from(text);
+    parser.fragment_parsing = opt.fragment_parsing;
+    let parser = parser;
+
     let parent_id = doc.root().id;
     pd.parent_prefixes.push("");
     let mut tag_name = TagNameSpan::new_null();
