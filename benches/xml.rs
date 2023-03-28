@@ -114,22 +114,22 @@ fn huge_quick_xml(bencher: &mut Bencher) {
 
 fn tiny_roxmltree(bencher: &mut Bencher) {
     let text = std::fs::read_to_string("fonts.conf").unwrap();
-    bencher.iter(|| roxmltree::Document::parse(&text).unwrap())
+    bencher.iter(|| roxmltree_relaxed::Document::parse(&text).unwrap())
 }
 
 fn medium_roxmltree(bencher: &mut Bencher) {
     let text = std::fs::read_to_string("medium.svg").unwrap();
-    bencher.iter(|| roxmltree::Document::parse(&text).unwrap())
+    bencher.iter(|| roxmltree_relaxed::Document::parse(&text).unwrap())
 }
 
 fn large_roxmltree(bencher: &mut Bencher) {
     let text = std::fs::read_to_string("large.plist").unwrap();
-    bencher.iter(|| roxmltree::Document::parse(&text).unwrap())
+    bencher.iter(|| roxmltree_relaxed::Document::parse(&text).unwrap())
 }
 
 fn huge_roxmltree(bencher: &mut Bencher) {
     let text = std::fs::read_to_string("huge.xml").unwrap();
-    bencher.iter(|| roxmltree::Document::parse(&text).unwrap())
+    bencher.iter(|| roxmltree_relaxed::Document::parse(&text).unwrap())
 }
 
 fn tiny_xmltree(bencher: &mut Bencher) {
@@ -214,7 +214,7 @@ fn huge_libxml(bencher: &mut Bencher) {
 
 fn roxmltree_iter_descendants_inexpensive(bencher: &mut Bencher) {
     let text = std::fs::read_to_string("large.plist").unwrap();
-    let doc = roxmltree::Document::parse(&text).unwrap();
+    let doc = roxmltree_relaxed::Document::parse(&text).unwrap();
     let root = doc.root();
     bencher.iter(|| {
         let count = root
@@ -227,7 +227,7 @@ fn roxmltree_iter_descendants_inexpensive(bencher: &mut Bencher) {
 
 fn roxmltree_iter_descendants_expensive(bencher: &mut Bencher) {
     let text = std::fs::read_to_string("large.plist").unwrap();
-    let doc = roxmltree::Document::parse(&text).unwrap();
+    let doc = roxmltree_relaxed::Document::parse(&text).unwrap();
     let root = doc.root();
     bencher.iter(|| {
         let count = root
@@ -240,7 +240,7 @@ fn roxmltree_iter_descendants_expensive(bencher: &mut Bencher) {
 
 fn roxmltree_iter_children(bencher: &mut Bencher) {
     let text = std::fs::read_to_string("large.plist").unwrap();
-    let doc = roxmltree::Document::parse(&text).unwrap();
+    let doc = roxmltree_relaxed::Document::parse(&text).unwrap();
     let root = doc.root();
     let large_array = root
         .descendants()

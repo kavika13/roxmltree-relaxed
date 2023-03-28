@@ -88,7 +88,7 @@ impl<'input> Document<'input> {
     /// # Examples
     ///
     /// ```
-    /// let doc = roxmltree::Document::parse("<e/>").unwrap();
+    /// let doc = roxmltree_relaxed::Document::parse("<e/>").unwrap();
     /// assert!(doc.root().is_root());
     /// assert!(doc.root().first_child().unwrap().has_tag_name("e"));
     /// ```
@@ -108,13 +108,13 @@ impl<'input> Document<'input> {
     /// # Examples
     ///
     /// ```
-    /// let doc = roxmltree::Document::parse("\
+    /// let doc = roxmltree_relaxed::Document::parse("\
     /// <p>
     ///     text
     /// </p>
     /// ").unwrap();
     ///
-    /// use roxmltree::NodeId;
+    /// use roxmltree_relaxed::NodeId;
     /// assert_eq!(doc.get_node(NodeId::new(0)).unwrap(), doc.root());
     /// assert_eq!(doc.get_node(NodeId::new(1)), doc.descendants().find(|n| n.has_tag_name("p")));
     /// assert_eq!(doc.get_node(NodeId::new(2)), doc.descendants().find(|n| n.is_text()));
@@ -138,7 +138,7 @@ impl<'input> Document<'input> {
     /// # Examples
     ///
     /// ```
-    /// let doc = roxmltree::Document::parse("<!-- comment --><e/>").unwrap();
+    /// let doc = roxmltree_relaxed::Document::parse("<!-- comment --><e/>").unwrap();
     /// assert!(doc.root_element().has_tag_name("e"));
     /// ```
     #[inline]
@@ -164,7 +164,7 @@ impl<'input> Document<'input> {
     /// # Examples
     ///
     /// ```
-    /// use roxmltree::*;
+    /// use roxmltree_relaxed::*;
     ///
     /// let doc = Document::parse("\
     /// <!-- comment -->
@@ -184,7 +184,7 @@ impl<'input> Document<'input> {
     /// # Examples
     ///
     /// ```
-    /// use roxmltree::*;
+    /// use roxmltree_relaxed::*;
     ///
     /// let doc = Document::parse("<e/>").unwrap();
     ///
@@ -474,7 +474,7 @@ impl<'a, 'input> Attribute<'a, 'input> {
     /// # Examples
     ///
     /// ```
-    /// let doc = roxmltree::Document::parse(
+    /// let doc = roxmltree_relaxed::Document::parse(
     ///     "<e xmlns:n='http://www.w3.org' a='b' n:a='c'/>"
     /// ).unwrap();
     ///
@@ -491,7 +491,7 @@ impl<'a, 'input> Attribute<'a, 'input> {
     /// # Examples
     ///
     /// ```
-    /// let doc = roxmltree::Document::parse(
+    /// let doc = roxmltree_relaxed::Document::parse(
     ///     "<e xmlns:n='http://www.w3.org' a='b' n:a='c'/>"
     /// ).unwrap();
     ///
@@ -508,7 +508,7 @@ impl<'a, 'input> Attribute<'a, 'input> {
     /// # Examples
     ///
     /// ```
-    /// let doc = roxmltree::Document::parse(
+    /// let doc = roxmltree_relaxed::Document::parse(
     ///     "<e xmlns:n='http://www.w3.org' a='b' n:a='c'/>"
     /// ).unwrap();
     ///
@@ -579,7 +579,7 @@ impl<'input> Namespace<'input> {
     /// # Examples
     ///
     /// ```
-    /// let doc = roxmltree::Document::parse(
+    /// let doc = roxmltree_relaxed::Document::parse(
     ///     "<e xmlns:n='http://www.w3.org'/>"
     /// ).unwrap();
     ///
@@ -587,7 +587,7 @@ impl<'input> Namespace<'input> {
     /// ```
     ///
     /// ```
-    /// let doc = roxmltree::Document::parse(
+    /// let doc = roxmltree_relaxed::Document::parse(
     ///     "<e xmlns='http://www.w3.org'/>"
     /// ).unwrap();
     ///
@@ -603,7 +603,7 @@ impl<'input> Namespace<'input> {
     /// # Examples
     ///
     /// ```
-    /// let doc = roxmltree::Document::parse(
+    /// let doc = roxmltree_relaxed::Document::parse(
     ///     "<e xmlns:n='http://www.w3.org'/>"
     /// ).unwrap();
     ///
@@ -723,7 +723,7 @@ impl<'a, 'b> ExpandedName<'a, 'b> {
     /// # Examples
     ///
     /// ```
-    /// let doc = roxmltree::Document::parse("<e xmlns='http://www.w3.org'/>").unwrap();
+    /// let doc = roxmltree_relaxed::Document::parse("<e xmlns='http://www.w3.org'/>").unwrap();
     ///
     /// assert_eq!(doc.root_element().tag_name().namespace(), Some("http://www.w3.org"));
     /// ```
@@ -737,7 +737,7 @@ impl<'a, 'b> ExpandedName<'a, 'b> {
     /// # Examples
     ///
     /// ```
-    /// let doc = roxmltree::Document::parse("<e/>").unwrap();
+    /// let doc = roxmltree_relaxed::Document::parse("<e/>").unwrap();
     ///
     /// assert_eq!(doc.root_element().tag_name().name(), "e");
     /// ```
@@ -893,7 +893,7 @@ impl<'a, 'input: 'a> Node<'a, 'input> {
     /// # Examples
     ///
     /// ```
-    /// let doc = roxmltree::Document::parse("<e xmlns='http://www.w3.org'/>").unwrap();
+    /// let doc = roxmltree_relaxed::Document::parse("<e xmlns='http://www.w3.org'/>").unwrap();
     ///
     /// assert_eq!(doc.root_element().tag_name().namespace(), Some("http://www.w3.org"));
     /// assert_eq!(doc.root_element().tag_name().name(), "e");
@@ -911,7 +911,7 @@ impl<'a, 'input: 'a> Node<'a, 'input> {
     /// # Examples
     ///
     /// ```
-    /// let doc = roxmltree::Document::parse("<e xmlns='http://www.w3.org'/>").unwrap();
+    /// let doc = roxmltree_relaxed::Document::parse("<e xmlns='http://www.w3.org'/>").unwrap();
     ///
     /// assert!(doc.root_element().has_tag_name("e"));
     /// assert!(doc.root_element().has_tag_name(("http://www.w3.org", "e")));
@@ -939,13 +939,13 @@ impl<'a, 'input: 'a> Node<'a, 'input> {
     /// # Examples
     ///
     /// ```
-    /// let doc = roxmltree::Document::parse("<e xmlns='http://www.w3.org'/>").unwrap();
+    /// let doc = roxmltree_relaxed::Document::parse("<e xmlns='http://www.w3.org'/>").unwrap();
     ///
     /// assert_eq!(doc.root_element().default_namespace(), Some("http://www.w3.org"));
     /// ```
     ///
     /// ```
-    /// let doc = roxmltree::Document::parse("<e xmlns:n='http://www.w3.org'/>").unwrap();
+    /// let doc = roxmltree_relaxed::Document::parse("<e xmlns:n='http://www.w3.org'/>").unwrap();
     ///
     /// assert_eq!(doc.root_element().default_namespace(), None);
     /// ```
@@ -960,13 +960,13 @@ impl<'a, 'input: 'a> Node<'a, 'input> {
     /// # Examples
     ///
     /// ```
-    /// let doc = roxmltree::Document::parse("<e xmlns:n='http://www.w3.org'/>").unwrap();
+    /// let doc = roxmltree_relaxed::Document::parse("<e xmlns:n='http://www.w3.org'/>").unwrap();
     ///
     /// assert_eq!(doc.root_element().lookup_prefix("http://www.w3.org"), Some("n"));
     /// ```
     ///
     /// ```
-    /// let doc = roxmltree::Document::parse("<e xmlns:n=''/>").unwrap();
+    /// let doc = roxmltree_relaxed::Document::parse("<e xmlns:n=''/>").unwrap();
     ///
     /// assert_eq!(doc.root_element().lookup_prefix(""), Some("n"));
     /// ```
@@ -986,13 +986,13 @@ impl<'a, 'input: 'a> Node<'a, 'input> {
     /// # Examples
     ///
     /// ```
-    /// let doc = roxmltree::Document::parse("<e xmlns:n='http://www.w3.org'/>").unwrap();
+    /// let doc = roxmltree_relaxed::Document::parse("<e xmlns:n='http://www.w3.org'/>").unwrap();
     ///
     /// assert_eq!(doc.root_element().lookup_namespace_uri(Some("n")), Some("http://www.w3.org"));
     /// ```
     ///
     /// ```
-    /// let doc = roxmltree::Document::parse("<e xmlns='http://www.w3.org'/>").unwrap();
+    /// let doc = roxmltree_relaxed::Document::parse("<e xmlns='http://www.w3.org'/>").unwrap();
     ///
     /// assert_eq!(doc.root_element().lookup_namespace_uri(None), Some("http://www.w3.org"));
     /// ```
@@ -1007,13 +1007,13 @@ impl<'a, 'input: 'a> Node<'a, 'input> {
     /// # Examples
     ///
     /// ```
-    /// let doc = roxmltree::Document::parse("<e a='b'/>").unwrap();
+    /// let doc = roxmltree_relaxed::Document::parse("<e a='b'/>").unwrap();
     ///
     /// assert_eq!(doc.root_element().attribute("a"), Some("b"));
     /// ```
     ///
     /// ```
-    /// let doc = roxmltree::Document::parse(
+    /// let doc = roxmltree_relaxed::Document::parse(
     ///     "<e xmlns:n='http://www.w3.org' a='b' n:a='c'/>"
     /// ).unwrap();
     ///
@@ -1049,7 +1049,7 @@ impl<'a, 'input: 'a> Node<'a, 'input> {
     /// # Examples
     ///
     /// ```
-    /// let doc = roxmltree::Document::parse(
+    /// let doc = roxmltree_relaxed::Document::parse(
     ///     "<e xmlns:n='http://www.w3.org' a='b' n:a='c'/>"
     /// ).unwrap();
     ///
@@ -1073,7 +1073,7 @@ impl<'a, 'input: 'a> Node<'a, 'input> {
     /// # Examples
     ///
     /// ```
-    /// let doc = roxmltree::Document::parse(
+    /// let doc = roxmltree_relaxed::Document::parse(
     ///     "<e xmlns:n='http://www.w3.org' a='b' n:a='c'/>"
     /// ).unwrap();
     ///
@@ -1089,7 +1089,7 @@ impl<'a, 'input: 'a> Node<'a, 'input> {
     /// # Examples
     ///
     /// ```
-    /// let doc = roxmltree::Document::parse(
+    /// let doc = roxmltree_relaxed::Document::parse(
     ///     "<e xmlns:n='http://www.w3.org'/>"
     /// ).unwrap();
     ///
@@ -1119,7 +1119,7 @@ impl<'a, 'input: 'a> Node<'a, 'input> {
     /// # Examples
     ///
     /// ```
-    /// let doc = roxmltree::Document::parse("\
+    /// let doc = roxmltree_relaxed::Document::parse("\
     /// <p>
     ///     text
     /// </p>
@@ -1132,7 +1132,7 @@ impl<'a, 'input: 'a> Node<'a, 'input> {
     /// ```
     ///
     /// ```
-    /// let doc = roxmltree::Document::parse("<!-- comment --><e/>").unwrap();
+    /// let doc = roxmltree_relaxed::Document::parse("<!-- comment --><e/>").unwrap();
     ///
     /// assert_eq!(doc.root().first_child().unwrap().text(), Some(" comment "));
     /// ```
@@ -1164,7 +1164,7 @@ impl<'a, 'input: 'a> Node<'a, 'input> {
     /// # Examples
     ///
     /// ```
-    /// let doc = roxmltree::Document::parse("\
+    /// let doc = roxmltree_relaxed::Document::parse("\
     /// <root>
     ///     text1
     ///     <p/>

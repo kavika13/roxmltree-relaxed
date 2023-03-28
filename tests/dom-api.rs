@@ -1,6 +1,6 @@
-extern crate roxmltree;
+extern crate roxmltree_relaxed;
 
-use roxmltree::*;
+use roxmltree_relaxed::*;
 
 // Document.getElementsByTagName()
 #[test]

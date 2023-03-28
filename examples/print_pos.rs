@@ -8,11 +8,11 @@ fn main() {
     }
 
     let text = std::fs::read_to_string(&args[1]).unwrap();
-    let opt = roxmltree::ParsingOptions {
+    let opt = roxmltree_relaxed::ParsingOptions {
         allow_dtd: true,
-        ..roxmltree::ParsingOptions::default()
+        ..roxmltree_relaxed::ParsingOptions::default()
     };
-    let doc = match roxmltree::Document::parse_with_options(&text, opt) {
+    let doc = match roxmltree_relaxed::Document::parse_with_options(&text, opt) {
         Ok(doc) => doc,
         Err(e) => {
             println!("Error: {}.", e);

@@ -1,8 +1,8 @@
 #![allow(clippy::bool_assert_comparison)]
 
-extern crate roxmltree;
+extern crate roxmltree_relaxed;
 
-use roxmltree::*;
+use roxmltree_relaxed::*;
 
 #[test]
 fn root_element_01() {
@@ -198,7 +198,7 @@ fn text_pos_03() {
 fn next_sibling_element_01() {
     let data = "<root><a/><b/><c/></root>";
 
-    let doc = roxmltree::Document::parse(data).unwrap();
+    let doc = roxmltree_relaxed::Document::parse(data).unwrap();
 
     let root = doc.root_element();
     let a = root.first_element_child().unwrap();
@@ -216,7 +216,7 @@ fn next_sibling_element_01() {
 fn next_prev_element_01() {
     let data = "<root><a/><b/><c/></root>";
 
-    let doc = roxmltree::Document::parse(data).unwrap();
+    let doc = roxmltree_relaxed::Document::parse(data).unwrap();
 
     let root = doc.root_element();
     let c = root.last_element_child().unwrap();
@@ -234,7 +234,7 @@ fn next_prev_element_01() {
 fn nodes_document_order() {
     let data = "<root><a/><b/><c/></root>";
 
-    let doc = roxmltree::Document::parse(data).unwrap();
+    let doc = roxmltree_relaxed::Document::parse(data).unwrap();
     let root = doc.root_element();
     let a = root.first_element_child().unwrap();
     let b = a.next_sibling_element().unwrap();
@@ -249,14 +249,14 @@ fn nodes_document_order() {
 
 #[test]
 fn lifetimes() {
-    fn f<'a, 'd, F, R>(doc: &'a roxmltree::Document<'d>, fun: F) -> R
+    fn f<'a, 'd, F, R>(doc: &'a roxmltree_relaxed::Document<'d>, fun: F) -> R
     where
-        F: Fn(&'a roxmltree::Document<'d>) -> R,
+        F: Fn(&'a roxmltree_relaxed::Document<'d>) -> R,
     {
         fun(doc)
     }
 
-    let doc = roxmltree::Document::parse("<e xmlns='http://www.w3.org'/>").unwrap();
+    let doc = roxmltree_relaxed::Document::parse("<e xmlns='http://www.w3.org'/>").unwrap();
 
     let _ = f(&doc, |d| d.root());
     let _ = f(&doc, |d| d.root().document());
@@ -282,7 +282,7 @@ fn tag_name_lifetime() {
     }
 
     let data = "<e xmlns='http://www.w3.org' />";
-    let doc = roxmltree::Document::parse(data).unwrap();
+    let doc = roxmltree_relaxed::Document::parse(data).unwrap();
     let root = doc.root_element();
     assert_eq!(get_tag_name(&root), "e");
 }

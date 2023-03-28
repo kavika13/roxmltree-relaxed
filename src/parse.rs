@@ -292,7 +292,7 @@ impl<'input> Document<'input> {
     /// # Examples
     ///
     /// ```
-    /// let doc = roxmltree::Document::parse("<e/>").unwrap();
+    /// let doc = roxmltree_relaxed::Document::parse("<e/>").unwrap();
     /// assert_eq!(doc.descendants().count(), 2); // root node + `e` element node
     /// ```
     #[inline]
@@ -308,8 +308,8 @@ impl<'input> Document<'input> {
     /// # Examples
     ///
     /// ```
-    /// let opt = roxmltree::ParsingOptions::default();
-    /// let doc = roxmltree::Document::parse_with_options("<e/>", opt).unwrap();
+    /// let opt = roxmltree_relaxed::ParsingOptions::default();
+    /// let doc = roxmltree_relaxed::Document::parse_with_options("<e/>", opt).unwrap();
     /// assert_eq!(doc.descendants().count(), 2); // root node + `e` element node
     /// ```
     #[inline]

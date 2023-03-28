@@ -16,7 +16,7 @@ Represents an [XML 1.0](https://www.w3.org/TR/xml/) document as a read-only tree
 
 ```rust
 // Find element by id.
-let doc = roxmltree::Document::parse("<rect id='rect1'/>")?;
+let doc = roxmltree_relaxed::Document::parse("<rect id='rect1'/>")?;
 let elem = doc.descendants().find(|n| n.attribute("id") == Some("rect1"))?;
 assert!(elem.has_tag_name("rect"));
 ```

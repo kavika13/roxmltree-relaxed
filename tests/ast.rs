@@ -1,6 +1,6 @@
-extern crate roxmltree;
+extern crate roxmltree_relaxed;
 
-use roxmltree::*;
+use roxmltree_relaxed::*;
 
 use std::fmt;
 use std::fmt::Write;
@@ -37,7 +37,7 @@ fn actual_test(path: &str) {
 
     let opt = ParsingOptions {
         allow_dtd: true,
-        ..roxmltree::ParsingOptions::default()
+        ..roxmltree_relaxed::ParsingOptions::default()
     };
 
     let input_xml = load_file(path);
