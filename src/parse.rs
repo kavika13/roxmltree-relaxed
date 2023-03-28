@@ -1,7 +1,7 @@
 use alloc::string::{String, ToString};
 use alloc::vec::Vec;
 
-use xmlparser::{self, Reference, StrSpan, Stream, TextPos};
+use xmlparser_relaxed::{self, Reference, StrSpan, Stream, TextPos};
 
 use crate::{
     AttributeData, Document, ExpandedNameIndexed, NamespaceIdx, Namespaces, NodeData, NodeId,
@@ -97,7 +97,7 @@ pub enum Error {
     NamespacesLimitReached,
 
     /// Errors detected by the `xmlparser` crate.
-    ParserError(xmlparser::Error),
+    ParserError(xmlparser_relaxed::Error),
 }
 
 impl Error {
@@ -124,9 +124,9 @@ impl Error {
     }
 }
 
-impl From<xmlparser::Error> for Error {
+impl From<xmlparser_relaxed::Error> for Error {
     #[inline]
-    fn from(e: xmlparser::Error) -> Self {
+    fn from(e: xmlparser_relaxed::Error) -> Self {
         Error::ParserError(e)
     }
 }
@@ -519,7 +519,7 @@ fn parse(text: &str, opt: ParsingOptions) -> Result<Document, Error> {
     doc.namespaces
         .push_ns(Some(NS_XML_PREFIX), BorrowedText::Input(NS_XML_URI))?;
 
-    let mut parser = xmlparser::Tokenizer::from(text);
+    let mut parser = xmlparser_relaxed::Tokenizer::from(text);
     parser.fragment_parsing = opt.fragment_parsing;
     let parser = parser;
 
@@ -552,7 +552,7 @@ fn parse(text: &str, opt: ParsingOptions) -> Result<Document, Error> {
 
 #[allow(clippy::collapsible_match)]
 fn process_tokens<'input>(
-    parser: xmlparser::Tokenizer<'input>,
+    parser: xmlparser_relaxed::Tokenizer<'input>,
     mut parent_id: NodeId,
     loop_detector: &mut LoopDetector,
     tag_name: &mut TagNameSpan<'input>,
@@ -562,7 +562,7 @@ fn process_tokens<'input>(
     for token in parser {
         let token = token?;
         match token {
-            xmlparser::Token::ProcessingInstruction {
+            xmlparser_relaxed::Token::ProcessingInstruction {
                 target,
                 content,
                 span,
@@ -579,7 +579,7 @@ fn process_tokens<'input>(
                     &mut pd.awaiting_subtree,
                 )?;
             }
-            xmlparser::Token::Comment { text, span } => {
+            xmlparser_relaxed::Token::Comment { text, span } => {
                 doc.append(
                     parent_id,
                     NodeKind::Comment(StringStorage::Borrowed(text.as_str())),
@@ -588,10 +588,10 @@ fn process_tokens<'input>(
                     &mut pd.awaiting_subtree,
                 )?;
             }
-            xmlparser::Token::Text { text } => {
+            xmlparser_relaxed::Token::Text { text } => {
                 process_text(text, parent_id, loop_detector, pd, doc)?;
             }
-            xmlparser::Token::Cdata { text, span } => {
+            xmlparser_relaxed::Token::Cdata { text, span } => {
                 append_text(
                     BorrowedText::Input(text.as_str()),
                     parent_id,
@@ -603,7 +603,7 @@ fn process_tokens<'input>(
                 )?;
                 pd.after_text = true;
             }
-            xmlparser::Token::ElementStart {
+            xmlparser_relaxed::Token::ElementStart {
                 prefix,
                 local,
                 span,
@@ -615,7 +615,7 @@ fn process_tokens<'input>(
 
                 *tag_name = TagNameSpan::new(prefix, local, span);
             }
-            xmlparser::Token::Attribute {
+            xmlparser_relaxed::Token::Attribute {
                 prefix,
                 local,
                 value,
@@ -623,18 +623,18 @@ fn process_tokens<'input>(
             } => {
                 process_attribute(prefix, local, value, span, loop_detector, pd, doc)?;
             }
-            xmlparser::Token::ElementEnd { end, span } => {
+            xmlparser_relaxed::Token::ElementEnd { end, span } => {
                 process_element(*tag_name, end, span, &mut parent_id, pd, doc)?;
             }
-            xmlparser::Token::DtdStart { .. } => {
+            xmlparser_relaxed::Token::DtdStart { .. } => {
                 if !pd.opt.allow_dtd {
                     return Err(Error::DtdDetected);
                 }
             }
-            xmlparser::Token::EntityDeclaration {
+            xmlparser_relaxed::Token::EntityDeclaration {
                 name, definition, ..
             } => {
-                if let xmlparser::EntityDefinition::EntityValue(value) = definition {
+                if let xmlparser_relaxed::EntityDefinition::EntityValue(value) = definition {
                     pd.entities.push(Entity {
                         name: name.as_str(),
                         value,
@@ -645,10 +645,10 @@ fn process_tokens<'input>(
         }
 
         match token {
-            xmlparser::Token::ProcessingInstruction { .. }
-            | xmlparser::Token::Comment { .. }
-            | xmlparser::Token::ElementStart { .. }
-            | xmlparser::Token::ElementEnd { .. } => {
+            xmlparser_relaxed::Token::ProcessingInstruction { .. }
+            | xmlparser_relaxed::Token::Comment { .. }
+            | xmlparser_relaxed::Token::ElementStart { .. }
+            | xmlparser_relaxed::Token::ElementEnd { .. } => {
                 pd.after_text = false;
             }
             _ => {}
@@ -739,7 +739,7 @@ fn process_attribute<'input>(
 
 fn process_element<'input>(
     tag_name: TagNameSpan<'input>,
-    end_token: xmlparser::ElementEnd<'input>,
+    end_token: xmlparser_relaxed::ElementEnd<'input>,
     token_span: StrSpan<'input>,
     parent_id: &mut NodeId,
     pd: &mut ParserData<'input>,
@@ -750,7 +750,7 @@ fn process_element<'input>(
         // <!DOCTYPE test [ <!ENTITY p '</p>'> ]>
         // <root>&p;</root>
 
-        if let xmlparser::ElementEnd::Close(..) = end_token {
+        if let xmlparser_relaxed::ElementEnd::Close(..) = end_token {
             return Err(Error::UnexpectedEntityCloseTag(err_pos_from_span(
                 doc.text, token_span,
             )));
@@ -765,7 +765,7 @@ fn process_element<'input>(
     let attributes = resolve_attributes(pd, namespaces, doc)?;
 
     match end_token {
-        xmlparser::ElementEnd::Empty => {
+        xmlparser_relaxed::ElementEnd::Empty => {
             let tag_ns_idx = get_ns_idx_by_prefix(doc, namespaces, tag_name.prefix)?;
             let new_element_id = doc.append(
                 *parent_id,
@@ -783,7 +783,7 @@ fn process_element<'input>(
             )?;
             pd.awaiting_subtree.push(new_element_id);
         }
-        xmlparser::ElementEnd::Close(prefix, local) => {
+        xmlparser_relaxed::ElementEnd::Close(prefix, local) => {
             let prefix = prefix.as_str();
             let local = local.as_str();
 
@@ -816,7 +816,7 @@ fn process_element<'input>(
                 unreachable!("should be already checked by the xmlparser");
             }
         }
-        xmlparser::ElementEnd::Open => {
+        xmlparser_relaxed::ElementEnd::Open => {
             let tag_ns_idx = get_ns_idx_by_prefix(doc, namespaces, tag_name.prefix)?;
             *parent_id = doc.append(
                 *parent_id,
@@ -981,7 +981,7 @@ fn process_text<'input>(
                 loop_detector.inc_references(&s)?;
                 loop_detector.inc_depth(&s)?;
 
-                let parser = xmlparser::Tokenizer::from_fragment(doc.text, fragment.range());
+                let parser = xmlparser_relaxed::Tokenizer::from_fragment(doc.text, fragment.range());
                 let mut tag_name = TagNameSpan::new_null();
                 process_tokens(parser, parent_id, loop_detector, &mut tag_name, pd, doc)?;
                 pd.buffer.clear();

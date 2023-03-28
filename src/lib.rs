@@ -33,7 +33,7 @@ use core::num::NonZeroU32;
 
 use alloc::vec::Vec;
 
-pub use xmlparser::TextPos;
+pub use xmlparser_relaxed::TextPos;
 
 mod parse;
 pub use crate::parse::*;
@@ -176,7 +176,7 @@ impl<'input> Document<'input> {
     /// ```
     #[inline]
     pub fn text_pos_at(&self, pos: usize) -> TextPos {
-        xmlparser::Stream::from(self.text).gen_text_pos_from(pos)
+        xmlparser_relaxed::Stream::from(self.text).gen_text_pos_from(pos)
     }
 
     /// Returns the input text of the original document.

@@ -4,7 +4,7 @@ use bencher::{benchmark_group, benchmark_main};
 fn tiny_xmlparser(bencher: &mut Bencher) {
     let text = std::fs::read_to_string("fonts.conf").unwrap();
     bencher.iter(|| {
-        for t in xmlparser::Tokenizer::from(text.as_str()) {
+        for t in xmlparser_relaxed::Tokenizer::from(text.as_str()) {
             let _ = t.unwrap();
         }
     })
@@ -13,7 +13,7 @@ fn tiny_xmlparser(bencher: &mut Bencher) {
 fn medium_xmlparser(bencher: &mut Bencher) {
     let text = std::fs::read_to_string("medium.svg").unwrap();
     bencher.iter(|| {
-        for t in xmlparser::Tokenizer::from(text.as_str()) {
+        for t in xmlparser_relaxed::Tokenizer::from(text.as_str()) {
             let _ = t.unwrap();
         }
     })
@@ -22,7 +22,7 @@ fn medium_xmlparser(bencher: &mut Bencher) {
 fn large_xmlparser(bencher: &mut Bencher) {
     let text = std::fs::read_to_string("large.plist").unwrap();
     bencher.iter(|| {
-        for t in xmlparser::Tokenizer::from(text.as_str()) {
+        for t in xmlparser_relaxed::Tokenizer::from(text.as_str()) {
             let _ = t.unwrap();
         }
     })
@@ -31,7 +31,7 @@ fn large_xmlparser(bencher: &mut Bencher) {
 fn huge_xmlparser(bencher: &mut Bencher) {
     let text = std::fs::read_to_string("huge.xml").unwrap();
     bencher.iter(|| {
-        for t in xmlparser::Tokenizer::from(text.as_str()) {
+        for t in xmlparser_relaxed::Tokenizer::from(text.as_str()) {
             let _ = t.unwrap();
         }
     })
